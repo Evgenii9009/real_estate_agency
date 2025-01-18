@@ -1,13 +1,22 @@
 from django.db import migrations
+from itertools import chain
+
 
 def create_flateowner_connection(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     Owner = apps.get_model('property', 'Owner')
-    for flat in Flat.objects.all():
-        owner, created = Owner.objects.get_or_create(owner_name=flat.owner, owners_phonenumber=flat.owners_phonenumber, defaults={
-            'owner_pure_phone':flat.owner_pure_phone
-        })
-        owner.owned_flats.add(flat)
+    flat_set = Flat.objects.all()
+    flat_iterator = flat_set.iterator()
+    try: 
+         first_flat = next(flat_iterator)
+    except StopIteration:
+         pass
+    else:
+        for flat in chain([first_flat], flat_iterator):
+            owner, created = Owner.objects.get_or_create(owner_name=flat.owner, owners_phonenumber=flat.owners_phonenumber, defaults={
+                'owner_pure_phone':flat.owner_pure_phone
+            })
+            owner.owned_flats.add(flat)
 
 
 
