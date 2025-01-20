@@ -7,12 +7,8 @@ def transfer_owner_data(apps, schema_editor):
     Owner = apps.get_model('property', 'Owner')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    try: 
-         first_flat = next(flat_iterator)
-    except StopIteration:
-         pass
-    else:
-        for flat in chain([first_flat], flat_iterator):
+    first_flat = flat_set.first()
+    for flat in chain([first_flat], flat_iterator):
             Owner.objects.get_or_create(owner_name=flat.owner, owners_phonenumber=flat.owners_phonenumber, 
                                         defaults={'owner_pure_phone': flat.owner_pure_phone})
 

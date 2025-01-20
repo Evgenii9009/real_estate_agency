@@ -8,17 +8,13 @@ def normalize_phone_numbers(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    try: 
-         first_flat = next(flat_iterator)
-    except StopIteration:
-         pass
-    else:
-         for flat in chain([first_flat], flat_iterator):
-            phone_number = flat.owners_phonenumber
-            parsed_number = phonenumbers.parse(phone_number, 'RU')
-            if phonenumbers.is_valid_number(parsed_number):
-                    flat.owner_pure_phone = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-                    flat.save()
+    first_flat = flat_set.first()
+    for flat in chain([first_flat], flat_iterator):
+        phone_number = flat.owners_phonenumber
+        parsed_number = phonenumbers.parse(phone_number, 'RU')
+        if phonenumbers.is_valid_number(parsed_number):
+            flat.owner_pure_phone = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+            flat.save()
 
 
 class Migration(migrations.Migration):

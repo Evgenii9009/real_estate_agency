@@ -55,7 +55,7 @@ class Flat(models.Model):
 class Complaint(models.Model):
     text = models.TextField('Текст Жалобы')
     flat = models.ForeignKey(Flat, verbose_name='Квартира, на которую пожаловались', related_name="complaints", on_delete=models.CASCADE)
-    person = models.ForeignKey(User, verbose_name='Кто пожаловался', related_name="written_complaints", on_delete=models.CASCADE)
+    person = models.ForeignKey(User, verbose_name='Кто пожаловался', related_name="complaints", on_delete=models.CASCADE)
     def __str__(self):
         return f'Жалоба на квартиру: {self.flat}'
 
